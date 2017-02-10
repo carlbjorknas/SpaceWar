@@ -47,8 +47,19 @@ namespace SpaceWar.Classes
         {
             var distance = API.LidarFront();
             var isTarget = API.IdentifyTarget();
-
             _map.MarkSquares(_ship.Pos, _ship.Direction, distance, isTarget);
+            
+            var dir = MovementHelper.GetLeftOf(_ship.Direction);
+            distance = API.LidarLeft();
+            _map.MarkSquares(_ship.Pos, dir, distance);
+            
+            dir = MovementHelper.GetRightOf(_ship.Direction);
+            distance = API.LidarRight();
+            _map.MarkSquares(_ship.Pos, dir, distance);
+            
+            dir = MovementHelper.GetBackOf(_ship.Direction);
+            distance = API.LidarBack();
+            _map.MarkSquares(_ship.Pos, dir, distance);
         }
 
         //private List<Pos> FindTargets()

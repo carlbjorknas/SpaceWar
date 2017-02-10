@@ -36,10 +36,25 @@ namespace SpaceWar.Classes
             }
         }
 
+        public static Direction GetRightOf(Direction direction)
+        {
+            return NewDirection(direction, 1);
+        }
+
+        public static Direction GetBackOf(Direction direction)
+        {
+            return NewDirection(direction, 2);
+        }
+
         public static Direction GetLeftOf(Direction direction)
         {
-            var newValue = ((int)direction + 3) % 4;
-            return (Direction) newValue;
+            return NewDirection(direction, 3);
+        }
+
+        private static Direction NewDirection(Direction direction, int diff)
+        {
+            var newValue = ((int)direction + diff) % 4;
+            return (Direction)newValue;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace SpaceWar.Classes
         private const int Height = 100;
         private readonly SquareType[,] _squares = new SquareType[Width, Height];
 
-        public void MarkSquares(Pos startPos, Direction dir, int distance, bool isTarget)
+        public void MarkSquares(Pos startPos, Direction dir, int distance, bool isTarget=false)
         {
             var positions = MovementHelper.MapToPositions(startPos, dir, distance);
             foreach (var spacePos in positions.Take(positions.Count - 1))
@@ -19,7 +19,7 @@ namespace SpaceWar.Classes
             }
 
             var lastPos = positions.Last();
-            SetSquareType(lastPos, isTarget ? SquareType.Target : SquareType.Wall);
+            SetSquareType(lastPos, isTarget ? SquareType.Target : SquareType.NotSpace);
         }
 
         private void SetSquareType(Pos pos, SquareType type)
