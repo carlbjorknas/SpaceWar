@@ -8,5 +8,6 @@
         public static void MoveForward() { }
         public static void TurnLeft() { }
         public static int LidarFront() => 0;
+        public static int CurrentFuel() => 1;
     }
 }

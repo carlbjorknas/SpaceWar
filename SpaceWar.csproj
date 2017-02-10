@@ -49,6 +49,7 @@
     <Compile Include="Classes\API.cs" />
     <Compile Include="Classes\Engine.cs" />
     <Compile Include="Classes\Direction.cs" />
+    <Compile Include="Classes\Printer.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -4,7 +4,7 @@
         public Ship()
         {
             Pos = new Pos(50, 50);
-            Direction = Direction.South;
+            Direction = Direction.North;
         }
 
         public Pos Pos { get; set; }

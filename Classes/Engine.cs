@@ -1,14 +1,27 @@
-﻿namespace SpaceWar.Classes
+﻿using System.Runtime.InteropServices;
+
+namespace SpaceWar.Classes
 {
     public class Engine
     {
         private readonly Map _map = new Map();
         private readonly Ship _ship = new Ship();
+        private readonly Printer _printer;
+
+        public Engine()
+        {
+            _printer = new Printer(_ship, _map);
+        }
 
         public void Update()
         {
+            if (API.CurrentFuel() == 0)
+            {
+                return;
+            }
+
             UpdateMap();
-            _map.Print(_ship.Pos, _ship.Direction);
+            _printer.Print();
             //var targets = FindTargets();
 
             if (API.IdentifyTarget())

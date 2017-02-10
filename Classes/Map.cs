@@ -51,30 +51,71 @@ namespace SpaceWar.Classes
             return squares;
         }
 
-        internal void Print(Pos pos, Direction dir)
+        public Pos GetBottomLeft()
         {
-            for (int y = pos.Y - 5; y<pos.Y+5; y++)
+            int bottomMost = -1;
+            for (int y = 0; y < Height && bottomMost < 0; y++)
             {
-                var row = "";
-                for (int x = pos.X - 5; x < pos.X + 5; x++)
+                for (int x = 0; x < Width; x++)
                 {
-                    row += ToString(x, y);
+                    if (_squares[x, y] != SquareType.Unexplored)
+                    {
+                        bottomMost = y-1;
+                        break;
+                    }
                 }
-                Console.WriteLine(row);
             }
+
+            int leftMost = -1;
+            for (int x = 0; x < Width && leftMost < 0; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    if (_squares[x, y] != SquareType.Unexplored)
+                    {
+                        leftMost = x-1;
+                        break;
+                    }
+                }
+            }
+
+            return new Pos(leftMost, bottomMost);
         }
 
-        private string ToString(int x, int y)
+        public Pos GetTopRight()
         {
-            switch (_squares[x, y])
+            int topMost = Height;
+            for (int y = Height-1; y >= 0 && topMost == Height; y--)
             {
-                case SquareType.Unexplored: return "?";
-                case SquareType.Space: return " ";
-                case SquareType.NotSpace: return "@";
-                case SquareType.Wall: return "#";
-                case SquareType.Target:return "X";
-                default: return "ö";
+                for (int x = 0; x < Width; x++)
+                {
+                    if (_squares[x, y] != SquareType.Unexplored)
+                    {
+                        topMost = y+1;
+                        break;
+                    }
+                }
             }
+
+            int rightMost = Width;
+            for (int x = Width-1; x >= 0 && rightMost == Width; x--)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    if (_squares[x, y] != SquareType.Unexplored)
+                    {
+                        rightMost = x+1;
+                        break;
+                    }
+                }
+            }
+
+            return new Pos(rightMost, topMost);
+        }
+
+        public SquareType GetSquareType(int x, int y)
+        {
+            return _squares[x, y];
         }
     }
 }
