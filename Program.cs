@@ -17,8 +17,4 @@ namespace SpaceWar
             Application.Run(new Form1());
         }
     }
-
-    //using System;
-    //using System.Collections.Generic;
-    //using System.Linq;
 }

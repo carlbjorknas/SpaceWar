@@ -2,11 +2,10 @@
 {
     public class Solution
     {
-        readonly Engine _engine;
+        private readonly Engine _engine = new Engine();
 
         public Solution()
         {
-            _engine = new Engine();
         }
 
         public void Update()
