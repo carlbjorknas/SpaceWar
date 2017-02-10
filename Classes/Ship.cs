@@ -4,7 +4,7 @@
         public Ship()
         {
             Pos = new Pos(50, 50);
-            Direction = Direction.North;
+            Direction = Direction.South;
         }
 
         public Pos Pos { get; set; }
@@ -14,6 +14,12 @@
         {
             Pos = MovementHelper.GetNext(Pos, Direction);
             API.MoveForward();
+        }
+
+        public void TurnLeft()
+        {
+            Direction = MovementHelper.GetLeftOf(Direction);
+            API.TurnLeft();
         }
     }
 }

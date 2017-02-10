@@ -3,7 +3,7 @@
     public class Engine
     {
         private readonly Map _map = new Map();
-        public readonly Ship _ship = new Ship();
+        private readonly Ship _ship = new Ship();
 
         public void Update()
         {
@@ -25,7 +25,7 @@
 
             if (API.LidarFront() == 1)
             {
-                API.TurnLeft();
+                _ship.TurnLeft();
                 return;
             }
         }

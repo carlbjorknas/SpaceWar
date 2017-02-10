@@ -8,35 +8,38 @@ namespace SpaceWar.Classes
     {
         public static Pos GetNext(Pos currentPos, Direction dir)
         {
-            return MapToPositions(currentPos, dir, 1).First();
+            var getNextPos = GetStepper(dir);
+            return getNextPos(currentPos);
         }
 
         public static List<Pos> MapToPositions(Pos startPos, Direction dir, int distance)
         {
-            Func<Pos, Pos> nextPos;
-            switch (dir)
-            {
-                case Direction.North:
-                    nextPos = oldPos => new Pos { X = oldPos.X, Y = oldPos.Y + 1 };
-                    break;
-                case Direction.East:
-                    nextPos = oldPos => new Pos { X = oldPos.X + 1, Y = oldPos.Y };
-                    break;
-                case Direction.South:
-                    nextPos = oldPos => new Pos { X = oldPos.X, Y = oldPos.Y - 1 };
-                    break;
-                case Direction.West:
-                    nextPos = oldPos => new Pos { X = oldPos.X - 1, Y = oldPos.Y };
-                    break;
-                default: throw new Exception("Invalid direction");
-            }
+            var getNextPos = GetStepper(dir);
 
             var currentPos = startPos;
             var positions = Enumerable
                 .Range(0, distance)
-                .Select(unused => nextPos(currentPos))
+                .Select(unused => currentPos = getNextPos(currentPos))
                 .ToList();
             return positions;
+        }
+
+        private static Func<Pos, Pos> GetStepper(Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.North: return oldPos => new Pos { X = oldPos.X, Y = oldPos.Y + 1 };
+                case Direction.East: return oldPos => new Pos { X = oldPos.X + 1, Y = oldPos.Y };                    
+                case Direction.South: return oldPos => new Pos { X = oldPos.X, Y = oldPos.Y - 1 };                    
+                case Direction.West: return oldPos => new Pos { X = oldPos.X - 1, Y = oldPos.Y };
+                default: throw new Exception("Invalid direction");
+            }
+        }
+
+        public static Direction GetLeftOf(Direction direction)
+        {
+            var newValue = ((int)direction + 3) % 4;
+            return (Direction) newValue;
         }
     }
 }
