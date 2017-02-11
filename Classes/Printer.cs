@@ -30,10 +30,12 @@ namespace SpaceWar.Classes
             for (int y = topRight.Y; y >= bottomLeft.Y; y--)
             {
                 var row = "";
-                for (int x = bottomLeft.X; x <= topRight.X; x++)
-                {                   
+                for (var x = bottomLeft.X; x <= topRight.X; x++)
+                {                               
                     var type = _map.GetSquareType(x, y);
-                    row += ToString(type);
+                    row += _ship.IsOnPos(x, y)
+                        ? ToString(_ship.Direction)
+                        : ToString(type);
                 }
                 Console.WriteLine(row);
             }
@@ -71,6 +73,18 @@ namespace SpaceWar.Classes
                 case SquareType.NotSpace: return "@";
                 case SquareType.Wall: return "#";
                 case SquareType.Target: return "X";
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static string ToString(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.East: return "→";
+                case Direction.West: return "←";
+                case Direction.South: return "↓";
+                case Direction.North: return "↑";
                 default: throw new ArgumentOutOfRangeException();
             }
         }

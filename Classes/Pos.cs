@@ -14,5 +14,10 @@
         {
             return "X: " + X + ", Y:" + Y;
         }
+
+        public bool Equals(int x, int y)
+        {
+            return X == x && Y == y;
+        }
     }
 }

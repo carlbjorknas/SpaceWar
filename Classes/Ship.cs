@@ -21,5 +21,10 @@
             Direction = MovementHelper.GetLeftOf(Direction);
             API.TurnLeft();
         }
+
+        public bool IsOnPos(int x, int y)
+        {
+            return Pos.Equals(x, y);
+        }
     }
 }
