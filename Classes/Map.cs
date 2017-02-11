@@ -10,16 +10,49 @@ namespace SpaceWar.Classes
         private const int Height = 100;
         private readonly SquareType[,] _squares = new SquareType[Width, Height];
 
-        public void MarkSquares(Pos startPos, Direction dir, int distance, bool isTarget=false)
+        public void MarkSquares(Pos startPos, Direction dir, int distance, bool? isTarget=null)
         {
             var positions = MovementHelper.MapToPositions(startPos, dir, distance);
+            MarkAllButLastPositionAsSpace(positions);
+            MarkLastPosition(positions.Last(), isTarget);
+        }
+
+        private void MarkLastPosition(Pos lastPos, bool? isTarget)
+        {
+            var squareType = GetSquareTypeOfLastPosition(lastPos, isTarget);
+            SetSquareType(lastPos, squareType);
+        }
+
+        private SquareType GetSquareTypeOfLastPosition(Pos lastPos, bool? isTarget)
+        {
+            if (isTarget.HasValue)
+            {
+                return isTarget.Value ? SquareType.Target : SquareType.Wall;
+            }
+
+            var currentSquareType = GetSquareType(lastPos);
+            if (currentSquareType == SquareType.Space)
+            {
+                return SquareType.Target;
+            }
+
+            return currentSquareType == SquareType.Wall || currentSquareType == SquareType.Target
+                ? currentSquareType
+                : SquareType.NotSpace;
+        }
+
+
+        private void MarkAllButLastPositionAsSpace(List<Pos> positions)
+        {
             foreach (var spacePos in positions.Take(positions.Count - 1))
             {
                 SetSquareType(spacePos, SquareType.Space);
             }
+        }
 
-            var lastPos = positions.Last();
-            SetSquareType(lastPos, isTarget ? SquareType.Target : SquareType.NotSpace);
+        private SquareType GetSquareType(Pos pos)
+        {
+            return GetSquareType(pos.X, pos.Y);
         }
 
         private void SetSquareType(Pos pos, SquareType type)
