@@ -6,9 +6,8 @@ namespace SpaceWar.Classes
 {
     public class Map
     {
-        private const int Width = 100;
-        private const int Height = 100;
-        private readonly SquareType[,] _squares = new SquareType[Width, Height];
+        private const int Size = 100;
+        private readonly SquareType[,] _squares = new SquareType[Size, Size];
 
         public void MarkSquares(Pos startPos, Direction dir, int distance, bool? isTarget=null)
         {
@@ -71,79 +70,47 @@ namespace SpaceWar.Classes
         private List<Square> MapAsSquares()
         {
             var squares = new List<Square>();
-            for (int x = 0; x < Width; x++)
+            for (int x = 0; x < Size; x++)
             {
-                for (int y = 0; y < Height; y++)
+                for (int y = 0; y < Size; y++)
                 {
                     squares.Add(new Square {
                         Pos = new Pos(x, y),
-                        Type = _squares[x, y]
+                        SquareType = _squares[x, y]
                     });
                 }
             }
             return squares;
         }
 
-        public Pos GetBottomLeft()
+        public IEnumerable<Square> AllSquares(SquareVisitorDirection rowDir, SquareVisitorDirection cellDir)
         {
-            int bottomMost = -1;
-            for (int y = 0; y < Height && bottomMost < 0; y++)
+            var reverseDirs = new[] {SquareVisitorDirection.TopDown, SquareVisitorDirection.RightToLeft};
+
+            var rowIds = Enumerable.Range(0, Size).ToList();
+            if (reverseDirs.Contains(rowDir))
             {
-                for (int x = 0; x < Width; x++)
-                {
-                    if (_squares[x, y] != SquareType.Unexplored)
-                    {
-                        bottomMost = y-1;
-                        break;
-                    }
-                }
+                rowIds.Reverse();
             }
 
-            int leftMost = -1;
-            for (int x = 0; x < Width && leftMost < 0; x++)
+            var cellIds = Enumerable.Range(0, Size).ToList();
+            if (reverseDirs.Contains(cellDir))
             {
-                for (int y = 0; y < Height; y++)
-                {
-                    if (_squares[x, y] != SquareType.Unexplored)
-                    {
-                        leftMost = x-1;
-                        break;
-                    }
-                }
+                cellIds.Reverse();
             }
 
-            return new Pos(leftMost, bottomMost);
-        }
+            var xAxisScan = cellDir == SquareVisitorDirection.LeftToRight || cellDir == SquareVisitorDirection.RightToLeft;
 
-        public Pos GetTopRight()
-        {
-            int topMost = Height;
-            for (int y = Height-1; y >= 0 && topMost == Height; y--)
+            foreach (var rowId in rowIds)
             {
-                for (int x = 0; x < Width; x++)
+                foreach (var cellId in cellIds)
                 {
-                    if (_squares[x, y] != SquareType.Unexplored)
-                    {
-                        topMost = y+1;
-                        break;
-                    }
+                    var x = xAxisScan ? cellId : rowId;
+                    var y = xAxisScan ? rowId : cellId;
+                    var squareType = GetSquareType(x, y);
+                    yield return new Square(x, y, squareType);
                 }
             }
-
-            int rightMost = Width;
-            for (int x = Width-1; x >= 0 && rightMost == Width; x--)
-            {
-                for (int y = 0; y < Height; y++)
-                {
-                    if (_squares[x, y] != SquareType.Unexplored)
-                    {
-                        rightMost = x+1;
-                        break;
-                    }
-                }
-            }
-
-            return new Pos(rightMost, topMost);
         }
 
         public SquareType GetSquareType(int x, int y)

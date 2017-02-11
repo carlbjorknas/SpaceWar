@@ -18,21 +18,48 @@ namespace SpaceWar.Classes
         }
         internal void Print()
         {
-            var bottomLeft = _map.GetBottomLeft();
-            Console.WriteLine("BottomLeft: " + bottomLeft);
-            var topRight = _map.GetTopRight();
-            Console.WriteLine("TopRight: " + topRight);
+            var bottomLeft = GetBottomLeftPosOfExploredPartOfMap();
+            var topRight = GetTopRightPosOfExploredPartOfMap();
+
+            // Add frame of unexplored squares
+            bottomLeft.X--;
+            bottomLeft.Y--;
+            topRight.X++;
+            topRight.Y++;
+
             for (int y = topRight.Y; y >= bottomLeft.Y; y--)
             {
                 var row = "";
                 for (int x = bottomLeft.X; x <= topRight.X; x++)
-                {
+                {                   
                     var type = _map.GetSquareType(x, y);
                     row += ToString(type);
                 }
                 Console.WriteLine(row);
             }
             Console.WriteLine("");
+        }
+
+        private Pos GetBottomLeftPosOfExploredPartOfMap()
+        {
+            var bottommostExploredSquare = _map.AllSquares(SquareVisitorDirection.DownUp, SquareVisitorDirection.LeftToRight)
+                .First(square => square.SquareType != SquareType.Unexplored);
+
+            var leftmostExploredSquare = _map.AllSquares(SquareVisitorDirection.LeftToRight, SquareVisitorDirection.DownUp)
+                .First(square => square.SquareType != SquareType.Unexplored);
+
+            return new Pos(leftmostExploredSquare.Pos.X, bottommostExploredSquare.Pos.Y);
+        }
+
+        private Pos GetTopRightPosOfExploredPartOfMap()
+        {
+            var topmostExploredSquare = _map.AllSquares(SquareVisitorDirection.TopDown, SquareVisitorDirection.LeftToRight)
+                .First(square => square.SquareType != SquareType.Unexplored);
+
+            var rightmostExploredSquare = _map.AllSquares(SquareVisitorDirection.RightToLeft, SquareVisitorDirection.DownUp)
+                .First(square => square.SquareType != SquareType.Unexplored);
+
+            return new Pos(rightmostExploredSquare.Pos.X, topmostExploredSquare.Pos.Y);
         }
 
         private static string ToString(SquareType type)
@@ -44,7 +71,7 @@ namespace SpaceWar.Classes
                 case SquareType.NotSpace: return "@";
                 case SquareType.Wall: return "#";
                 case SquareType.Target: return "X";
-                default: return "ö";
+                default: throw new ArgumentOutOfRangeException();
             }
         }
     }
