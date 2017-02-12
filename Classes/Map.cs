@@ -59,63 +59,75 @@ namespace SpaceWar.Classes
             _squares[pos.X, pos.Y] = type;
         }
 
-        //internal List<Pos> GetAllPosOfType(SquareType type)
-        //{
-        //    return MapAsSquares()
-        //        .Where(square => square.Type == type)
-        //        .Select(square => square.Pos)
-        //        .ToList();
-        //}
-
-        private List<Square> MapAsSquares()
+        private Square GetSquare(int x, int y)
         {
-            var squares = new List<Square>();
-            for (int x = 0; x < Size; x++)
-            {
-                for (int y = 0; y < Size; y++)
-                {
-                    squares.Add(new Square {
-                        Pos = new Pos(x, y),
-                        SquareType = _squares[x, y]
-                    });
-                }
-            }
-            return squares;
+            return new Square(x, y, _squares[x, y]);
         }
 
-        public IEnumerable<Square> AllSquares(SquareVisitorDirection rowDir, SquareVisitorDirection cellDir)
+
+        public IEnumerable<Square> AllSquares(Direction rowDir, Direction cellDir)
         {
-            var reverseDirs = new[] {SquareVisitorDirection.TopDown, SquareVisitorDirection.RightToLeft};
+            var rowIndexes = GetIndexes(rowDir);
+            var cellIndexes = GetIndexes(cellDir);
 
-            var rowIds = Enumerable.Range(0, Size).ToList();
-            if (reverseDirs.Contains(rowDir))
+            var xAxisScan = cellDir == Direction.East || cellDir == Direction.West;
+
+            foreach (var rowIndex in rowIndexes)
             {
-                rowIds.Reverse();
-            }
-
-            var cellIds = Enumerable.Range(0, Size).ToList();
-            if (reverseDirs.Contains(cellDir))
-            {
-                cellIds.Reverse();
-            }
-
-            var xAxisScan = cellDir == SquareVisitorDirection.LeftToRight || cellDir == SquareVisitorDirection.RightToLeft;
-
-            foreach (var rowId in rowIds)
-            {
-                foreach (var cellId in cellIds)
+                foreach (var cellIndex in cellIndexes)
                 {
-                    var x = xAxisScan ? cellId : rowId;
-                    var y = xAxisScan ? rowId : cellId;
+                    var x = xAxisScan ? cellIndex : rowIndex;
+                    var y = xAxisScan ? rowIndex : cellIndex;
                     var squareType = GetSquareType(x, y);
                     yield return new Square(x, y, squareType);
                 }
             }
         }
 
+        private static List<int> GetIndexes(Direction dir)
+        {
+            var reverseDirs = new[] { Direction.South, Direction.West };
+            var indexes = Enumerable.Range(0, Size).ToList();
+
+            if (reverseDirs.Contains(dir))
+            {
+                indexes.Reverse();
+            }
+            
+            return indexes;
+        } 
+
         public SquareType GetSquareType(int x, int y)
         {
             return _squares[x, y];
+        }
+
+        public IEnumerable<Square> GetLineOfSquares(Pos pos, Direction dir)
+        {
+            var indexes = GetIndexes(dir);
+            switch (dir)
+            {
+                case Direction.North:
+                    return GetSquaresInColumn(pos.X, indexes.Skip(pos.Y + 1));
+                case Direction.East:
+                    return GetSquaresInRow(indexes.Skip(pos.X + 1), pos.Y);
+                case Direction.South:
+                    return GetSquaresInColumn(pos.X, indexes.Skip(Size - pos.Y));
+                case Direction.West:
+                    return GetSquaresInRow(indexes.Skip(Size - pos.X), pos.Y);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private IEnumerable<Square> GetSquaresInRow(IEnumerable<int> xIndexes, int yIndex)
+        {
+            return xIndexes.Select(xIndex => GetSquare(xIndex, yIndex));
+        }
+
+        private IEnumerable<Square> GetSquaresInColumn(int xIndex, IEnumerable<int> yIndexes)
+        {
+            return yIndexes.Select(yIndex => GetSquare(xIndex, yIndex));
         }
     }
 }

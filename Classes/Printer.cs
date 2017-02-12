@@ -21,6 +21,11 @@ namespace SpaceWar.Classes
             var bottomLeft = GetBottomLeftPosOfExploredPartOfMap();
             var topRight = GetTopRightPosOfExploredPartOfMap();
 
+            //Console.WriteLine("Bottom left: " + bottomLeft);
+            //Console.WriteLine("Top right: " + topRight);
+            //Console.WriteLine("Ship pos: " + _ship.Pos);
+            //Console.WriteLine("Ship dir: " + _ship.Direction);
+
             // Add frame of unexplored squares
             bottomLeft.X--;
             bottomLeft.Y--;
@@ -44,10 +49,10 @@ namespace SpaceWar.Classes
 
         private Pos GetBottomLeftPosOfExploredPartOfMap()
         {
-            var bottommostExploredSquare = _map.AllSquares(SquareVisitorDirection.DownUp, SquareVisitorDirection.LeftToRight)
+            var bottommostExploredSquare = _map.AllSquares(Direction.North, Direction.East)
                 .First(square => square.SquareType != SquareType.Unexplored);
 
-            var leftmostExploredSquare = _map.AllSquares(SquareVisitorDirection.LeftToRight, SquareVisitorDirection.DownUp)
+            var leftmostExploredSquare = _map.AllSquares(Direction.East, Direction.North)
                 .First(square => square.SquareType != SquareType.Unexplored);
 
             return new Pos(leftmostExploredSquare.Pos.X, bottommostExploredSquare.Pos.Y);
@@ -55,10 +60,10 @@ namespace SpaceWar.Classes
 
         private Pos GetTopRightPosOfExploredPartOfMap()
         {
-            var topmostExploredSquare = _map.AllSquares(SquareVisitorDirection.TopDown, SquareVisitorDirection.LeftToRight)
+            var topmostExploredSquare = _map.AllSquares(Direction.South, Direction.East)
                 .First(square => square.SquareType != SquareType.Unexplored);
 
-            var rightmostExploredSquare = _map.AllSquares(SquareVisitorDirection.RightToLeft, SquareVisitorDirection.DownUp)
+            var rightmostExploredSquare = _map.AllSquares(Direction.West, Direction.North)
                 .First(square => square.SquareType != SquareType.Unexplored);
 
             return new Pos(rightmostExploredSquare.Pos.X, topmostExploredSquare.Pos.Y);
