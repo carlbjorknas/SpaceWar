@@ -83,13 +83,13 @@ namespace SpaceWar.Classes
 
         private void Explore()
         {
-            if (API.LidarFront() > 1)
+            if (_ship.LidarFront > 1)
             {
                 _ship.MoveForward();
                 return;
             }
 
-            if (API.LidarFront() == 1)
+            if (_ship.LidarFront == 1)
             {
                 _ship.TurnLeft();
                 return;

@@ -62,5 +62,10 @@
         {
             get { return MovementHelper.GetBackOf(Direction); }
         }
+
+        public int LidarFront { get { return API.LidarFront(); } }
+        public int LidarBack { get { return API.LidarBack(); } }
+        public int LidarLeft { get { return API.LidarLeft(); } }
+        public int LidarRight { get { return API.LidarRight(); } }
     }
 }

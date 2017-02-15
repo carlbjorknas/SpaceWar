@@ -24,17 +24,16 @@
 
         private void UpdateMap()
         {
-            var isTarget = API.IdentifyTarget();
-            _map.MarkSquares(_ship.Pos, _ship.Direction, API.LidarFront(), isTarget);
+            _map.MarkSquares(_ship.Pos, _ship.Direction, _ship.LidarFront, _ship.IdentifyTarget);
 
             var dir = MovementHelper.GetLeftOf(_ship.Direction);
-            _map.MarkSquares(_ship.Pos, dir, API.LidarLeft());
+            _map.MarkSquares(_ship.Pos, dir, _ship.LidarLeft);
 
             dir = MovementHelper.GetRightOf(_ship.Direction);
-            _map.MarkSquares(_ship.Pos, dir, API.LidarRight());
+            _map.MarkSquares(_ship.Pos, dir, _ship.LidarRight);
 
             dir = MovementHelper.GetBackOf(_ship.Direction);
-            _map.MarkSquares(_ship.Pos, dir, API.LidarBack());
+            _map.MarkSquares(_ship.Pos, dir, _ship.LidarBack);
         }
     }
 }
