@@ -50,6 +50,8 @@
     <Compile Include="Classes\Direction.cs" />
     <Compile Include="Classes\Pilot.cs" />
     <Compile Include="Classes\Printer.cs" />
+    <Compile Include="Classes\RouteFinder.cs" />
+    <Compile Include="Classes\RouteFinderSquare.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

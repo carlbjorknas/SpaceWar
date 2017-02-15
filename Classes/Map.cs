@@ -6,8 +6,13 @@ namespace SpaceWar.Classes
 {
     public class Map
     {
-        private const int Size = 100;
+        public const int Size = 100;
         private readonly SquareType[,] _squares = new SquareType[Size, Size];
+
+        public void SetStartPos(Pos pos)
+        {
+            _squares[pos.X, pos.Y] = SquareType.Space;
+        }
 
         public void MarkSquares(Pos startPos, Direction dir, int distance, bool? isTarget=null)
         {
@@ -49,7 +54,12 @@ namespace SpaceWar.Classes
             }
         }
 
-        private SquareType GetSquareType(Pos pos)
+        public SquareType GetSquareType(int x, int y)
+        {
+            return _squares[x, y];
+        }
+
+        public SquareType GetSquareType(Pos pos)
         {
             return GetSquareType(pos.X, pos.Y);
         }
@@ -96,11 +106,6 @@ namespace SpaceWar.Classes
             
             return indexes;
         } 
-
-        public SquareType GetSquareType(int x, int y)
-        {
-            return _squares[x, y];
-        }
 
         public IEnumerable<Square> GetLineOfSquares(Pos pos, Direction dir)
         {

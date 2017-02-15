@@ -6,6 +6,7 @@
         public static bool IdentifyTarget() => true;
         public static void FireLaser() {}
         public static void MoveForward() { }
+        public static void MoveBackward() { }
         public static void TurnLeft() { }
         public static void TurnRight() { }
         public static int LidarFront() => 0;

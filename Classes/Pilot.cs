@@ -10,19 +10,28 @@ namespace SpaceWar.Classes
     {
         private readonly Map _map;
         private readonly Ship _ship;
+        private readonly RouteFinder _routeFinder;
+        private Queue<Command> _commands;
+
+        private bool _isExplorationPossible = true;
 
         public Pilot(Ship ship, Map map)
         {
             _ship = ship;
             _map = map;
+            _routeFinder = new RouteFinder(map);    
+            _commands = new Queue<Command>();
         }
 
         public void Steer()
         {
-            if (!Fighting())
+            if (Fighting())
             {
-                Explore();
-            }            
+                _commands = new Queue<Command>();
+                return;
+            }
+
+            Explore();
         }
 
         private bool Fighting()
@@ -41,7 +50,7 @@ namespace SpaceWar.Classes
 
             if (TargetInRangeToTheRight)
             {
-                _ship.TurnRigth();
+                _ship.TurnRight();
                 return true;
             }
 
@@ -83,16 +92,21 @@ namespace SpaceWar.Classes
 
         private void Explore()
         {
-            if (_ship.LidarFront > 1)
+            if (!_isExplorationPossible)
             {
-                _ship.MoveForward();
                 return;
             }
 
-            if (_ship.LidarFront == 1)
+            if (!_commands.Any())
             {
-                _ship.TurnLeft();
-                return;
+                _commands = _routeFinder.FindRouteForExploringUnexploredSquares(_ship);
+                _isExplorationPossible = _commands.Any();
+            }
+
+            if (_commands.Any())
+            {
+                var command = _commands.Dequeue();
+                command(_ship);
             }
         }
     }

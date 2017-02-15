@@ -11,6 +11,7 @@
         {
             _printer = new Printer(_ship, _map);
             _pilot = new Pilot(_ship, _map);
+            _map.SetStartPos(_ship.Pos);
         }
 
         public void Update()

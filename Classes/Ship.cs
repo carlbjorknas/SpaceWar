@@ -16,13 +16,19 @@
             API.MoveForward();
         }
 
+        internal void MoveBackward()
+        {
+            Pos = MovementHelper.GetNext(Pos, MovementHelper.GetBackOf(Direction));
+            API.MoveBackward();
+        }
+
         public void TurnLeft()
         {
             Direction = LeftDir;
             API.TurnLeft();
         }
 
-        public void TurnRigth()
+        public void TurnRight()
         {
             Direction = RightDir;
             API.TurnRight();
