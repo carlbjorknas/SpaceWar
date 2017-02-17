@@ -56,7 +56,7 @@ namespace SpaceWar.Classes
             else if (ship.LidarLeft == 4)
             {
                 Console.WriteLine("Starting in bottom left corner!");
-                ship.SetPosition(1, 1, Direction.West);
+                ship.SetPosition(1, 1, Direction.East);
             }
             else if (ship.LidarRight == 4)
             {
