@@ -41,7 +41,8 @@
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox1.Size = new System.Drawing.Size(1071, 709);
             this.textBox1.TabIndex = 0;
-            this.textBox1.Text = "using System;\r\nusing System.Collections.Generic;\r\nusing System.Linq;";
+            this.textBox1.Text = "using System;\r\nusing System.Collections.Generic;\r\nusing System.Linq;\r\nusing Syste" +
+    "m.Text;";
             // 
             // Form1
             // 

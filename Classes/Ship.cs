@@ -1,6 +1,7 @@
 ﻿namespace SpaceWar.Classes
 {
-    public class Ship{    
+    public class Ship{
+
         public Ship()
         {
             Pos = new Pos(50, 50);
@@ -69,9 +70,15 @@
             get { return MovementHelper.GetBackOf(Direction); }
         }
 
-        public int LidarFront { get { return API.LidarFront(); } }
+        public int LidarFront{ get { return API.LidarFront(); } }
         public int LidarBack { get { return API.LidarBack(); } }
         public int LidarLeft { get { return API.LidarLeft(); } }
         public int LidarRight { get { return API.LidarRight(); } }
+
+        public void SetPosition(int x, int y, Direction direction)
+        {
+            Pos = new Pos(x, y);
+            Direction = direction;
+        }
     }
 }

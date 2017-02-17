@@ -26,11 +26,11 @@ namespace SpaceWar.Classes
             //Console.WriteLine("Ship pos: " + _ship.Pos);
             //Console.WriteLine("Ship dir: " + _ship.Direction);
 
-            // Add frame of unexplored squares
-            bottomLeft.X--;
-            bottomLeft.Y--;
-            topRight.X++;
-            topRight.Y++;
+            //// Add frame of unexplored squares
+            //bottomLeft.X--;
+            //bottomLeft.Y--;
+            //topRight.X++;
+            //topRight.Y++;
 
             for (int y = topRight.Y; y >= bottomLeft.Y; y--)
             {

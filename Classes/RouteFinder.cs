@@ -12,19 +12,31 @@ namespace SpaceWar.Classes
     internal class RouteFinder
     {
         private readonly Map _map;
+        private readonly Ship _ship;
 
-        public RouteFinder(Map map)
+        public RouteFinder(Map map, Ship ship)
         {
             _map = map;
+            _ship = ship;
         }
 
-        public Queue<Command> FindRouteForExploringUnexploredSquares(Ship ship)
+        public Queue<Command> FindRouteToNextTarget()
+        {
+            return FindRouteToSquareType(SquareType.Target);
+        }
+
+        public Queue<Command> FindRouteForExploringUnexploredSquares()
+        {
+            return FindRouteToSquareType(SquareType.Unexplored);
+        }
+
+        private Queue<Command> FindRouteToSquareType(SquareType squareType)
         {
             var exploredPositions = new bool[100, 100];
 
             var queuedSquares = new List<RouteFinderSquare>();
 
-            var startSquare = new RouteFinderSquare(ship.Pos, ship.Direction, "");
+            var startSquare = new RouteFinderSquare(_ship.Pos, _ship.Direction, "");
             queuedSquares.Add(startSquare);
 
             while (queuedSquares.Any())
@@ -37,7 +49,7 @@ namespace SpaceWar.Classes
                     continue;
                 }
 
-                if (FindsUnexploredSquare(squareToEval))
+                if (FindsSquareType(squareToEval, squareType))
                 {
                     return ConvertToCommands(squareToEval.Route);
                 }
@@ -92,17 +104,17 @@ namespace SpaceWar.Classes
         private Command TurnRightCommand { get { return ship => ship.TurnRight(); } }
         private Command MoveBackwardCommand { get { return ship => ship.MoveBackward(); } }
 
-        private bool FindsUnexploredSquare(RouteFinderSquare square)
+        private bool FindsSquareType(RouteFinderSquare square, SquareType squareType)
         {            
-            return MovementHelper.AllDirections.Any(dir => FindsUnexploredSquare(square.Pos, dir));
+            return MovementHelper.AllDirections.Any(dir => FindsSquareType(square.Pos, dir, squareType));
         }
 
-        private bool FindsUnexploredSquare(Pos pos, Direction dir)
+        private bool FindsSquareType(Pos pos, Direction dir, SquareType squareType)
         {
             var firstNonSpaceSquare = _map.GetLineOfSquares(pos, dir)
                 .SkipWhile(s => s.SquareType == SquareType.Space)
                 .First();
-            return firstNonSpaceSquare.SquareType == SquareType.Unexplored;
+            return firstNonSpaceSquare.SquareType == squareType;
         }
     }
 }

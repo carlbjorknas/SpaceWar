@@ -74,6 +74,10 @@ namespace SpaceWar.Classes
             return new Square(x, y, _squares[x, y]);
         }
 
+        public IEnumerable<Square> AllSquares()
+        {
+            return AllSquares(Direction.North, Direction.East);
+        }
 
         public IEnumerable<Square> AllSquares(Direction rowDir, Direction cellDir)
         {
@@ -133,6 +137,32 @@ namespace SpaceWar.Classes
         private IEnumerable<Square> GetSquaresInColumn(int xIndex, IEnumerable<int> yIndexes)
         {
             return yIndexes.Select(yIndex => GetSquare(xIndex, yIndex));
+        }
+
+        public void SetMap(List<string> newMap)
+        {
+            var yIndex = newMap.Count-1;
+            foreach (var row in newMap)
+            {
+                var xIndex = 0;
+                foreach (var squareSymbol in row)
+                {
+                    _squares[xIndex, yIndex] = MapToSquareType(squareSymbol);
+                    xIndex++;
+                }
+                yIndex--;
+            }          
+        }
+
+        private SquareType MapToSquareType(char squareSymbol)
+        {
+            switch (squareSymbol)
+            {
+                case '#': return SquareType.Wall;
+                case ' ': return SquareType.Space;
+                case 'X': return SquareType.Target;
+                default: throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

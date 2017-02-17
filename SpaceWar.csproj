@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Classes\API.cs" />
     <Compile Include="Classes\Direction.cs" />
+    <Compile Include="Classes\LevelIdentifier.cs" />
     <Compile Include="Classes\Pilot.cs" />
     <Compile Include="Classes\Printer.cs" />
     <Compile Include="Classes\RouteFinder.cs" />

@@ -13,14 +13,26 @@ namespace SpaceWar.Classes
         private readonly RouteFinder _routeFinder;
         private Queue<Command> _commands;
 
-        private bool _isExplorationPossible = true;
+        private bool _canExplore = true;
+        private bool _canSearchForTargets = false;
 
         public Pilot(Ship ship, Map map)
         {
             _ship = ship;
             _map = map;
-            _routeFinder = new RouteFinder(map);    
+            _routeFinder = new RouteFinder(map, ship);    
             _commands = new Queue<Command>();
+        }
+
+        public bool IdentifyLevel()
+        {
+            if (LevelIdentifier.IdentifyLevel(_ship, _map))
+            {
+                _canExplore = false;
+                _canSearchForTargets = true;
+            }
+
+            return _canSearchForTargets;
         }
 
         public void Steer()
@@ -31,7 +43,29 @@ namespace SpaceWar.Classes
                 return;
             }
 
+            SearchTarget();
             Explore();
+        }
+
+        private void SearchTarget()
+        {
+            if (!_canSearchForTargets)
+            {
+                return;
+            }
+
+            if (!_commands.Any())
+            {
+                _commands = _routeFinder.FindRouteToNextTarget();
+                _canSearchForTargets = _commands.Any();
+                _canExplore = !_canSearchForTargets;
+            }
+
+            if (_commands.Any())
+            {
+                var command = _commands.Dequeue();
+                command(_ship);
+            }
         }
 
         private bool Fighting()
@@ -92,15 +126,15 @@ namespace SpaceWar.Classes
 
         private void Explore()
         {
-            if (!_isExplorationPossible)
+            if (!_canExplore)
             {
                 return;
             }
 
             if (!_commands.Any())
             {
-                _commands = _routeFinder.FindRouteForExploringUnexploredSquares(_ship);
-                _isExplorationPossible = _commands.Any();
+                _commands = _routeFinder.FindRouteForExploringUnexploredSquares();
+                _canExplore = _commands.Any();
             }
 
             if (_commands.Any())

@@ -7,15 +7,25 @@
         private Printer _printer;
         private Pilot _pilot;
 
+        private bool _firstRun = true;
+
         public Solution()
         {
             _printer = new Printer(_ship, _map);
-            _pilot = new Pilot(_ship, _map);
-            _map.SetStartPos(_ship.Pos);
+            _pilot = new Pilot(_ship, _map);                        
         }
 
         public void Update()
         {
+            if (_firstRun)
+            {
+                if (!_pilot.IdentifyLevel())
+                {
+                    _map.SetStartPos(_ship.Pos);                    
+                }
+                _firstRun = false;
+            }
+
             if (_ship.IsDead) return;
 
             UpdateMap();
