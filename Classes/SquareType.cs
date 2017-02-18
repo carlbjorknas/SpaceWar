@@ -6,6 +6,7 @@
         Space = 1,
         Wall = 2,
         NotSpace = 3,
-        Target = 4
+        Enemy = 4,
+        Alien = 5
     }
 }

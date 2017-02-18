@@ -20,9 +20,9 @@ namespace SpaceWar.Classes
             _ship = ship;
         }
 
-        public Queue<Command> FindRouteToNextTarget()
+        public Queue<Command> FindRouteToNextAlien()
         {
-            return FindRouteToSquareType(SquareType.Target);
+            return FindRouteToSquareType(SquareType.Alien);
         }
 
         public Queue<Command> FindRouteForExploringUnexploredSquares()

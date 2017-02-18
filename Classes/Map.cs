@@ -29,18 +29,21 @@ namespace SpaceWar.Classes
 
         private SquareType GetSquareTypeOfLastPosition(Pos lastPos, bool? isTarget)
         {
+            var currentSquareType = GetSquareType(lastPos);
+
             if (isTarget.HasValue)
             {
-                return isTarget.Value ? SquareType.Target : SquareType.Wall;
+                return isTarget.Value 
+                    ? currentSquareType == SquareType.Alien ? SquareType.Alien : SquareType.Enemy
+                    : SquareType.Wall;
             }
-
-            var currentSquareType = GetSquareType(lastPos);
+            
             if (currentSquareType == SquareType.Space)
             {
-                return SquareType.Target;
+                return SquareType.Enemy;
             }
 
-            return currentSquareType == SquareType.Wall || currentSquareType == SquareType.Target
+            return currentSquareType == SquareType.Wall || currentSquareType == SquareType.Enemy || currentSquareType == SquareType.Alien
                 ? currentSquareType
                 : SquareType.NotSpace;
         }
@@ -160,7 +163,7 @@ namespace SpaceWar.Classes
             {
                 case '#': return SquareType.Wall;
                 case ' ': return SquareType.Space;
-                case 'X': return SquareType.Target;
+                case 'X': return SquareType.Alien;
                 default: throw new ArgumentOutOfRangeException();
             }
         }

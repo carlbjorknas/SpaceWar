@@ -77,7 +77,8 @@ namespace SpaceWar.Classes
                 case SquareType.Space: return " ";
                 case SquareType.NotSpace: return "@";
                 case SquareType.Wall: return "#";
-                case SquareType.Target: return "X";
+                case SquareType.Enemy: return "X";
+                case SquareType.Alien: return "A";
                 default: throw new ArgumentOutOfRangeException();
             }
         }

@@ -14,7 +14,7 @@ namespace SpaceWar.Classes
         private Queue<Command> _commands;
 
         private bool _canExplore = true;
-        private bool _canSearchForTargets = false;
+        private bool _canSearchForAliens = false;
 
         public Pilot(Ship ship, Map map)
         {
@@ -29,15 +29,33 @@ namespace SpaceWar.Classes
             if (LevelIdentifier.IdentifyLevel(_ship, _map))
             {
                 _canExplore = false;
-                _canSearchForTargets = true;
+                _canSearchForAliens = true;
             }
 
-            return _canSearchForTargets;
+            return _canSearchForAliens;
         }
 
         public void Steer()
         {
-            if (TargetInRangeAhead || TargetInRangeToTheBack)
+            if (AvoidEnemies())
+            {
+                _commands = new Queue<Command>();
+                return;
+            }
+
+            if (FightAliens())
+            {
+                _commands = new Queue<Command>();
+                return;
+            }
+
+            SearchAliens();
+            //Explore();
+        }
+
+        private bool AvoidEnemies()
+        {
+            if (EnemyInRangeAhead || EnemyInRangeToTheBack)
             {
                 if (_ship.LidarLeft >= _ship.LidarRight)
                 {
@@ -47,8 +65,10 @@ namespace SpaceWar.Classes
                 {
                     _ship.TurnRight();
                 }
+                return true;
             }
-            else if (TargetInRangeToTheLeft || TargetInRangeToTheRight)
+
+            if (EnemyInRangeToTheLeft || EnemyInRangeToTheRight)
             {
                 if (_ship.LidarFront >= _ship.LidarBack)
                 {
@@ -58,29 +78,24 @@ namespace SpaceWar.Classes
                 {
                     _ship.MoveBackward();
                 }
+                return true;
             }
-            //if (Fighting())
-            //{
-            //    _commands = new Queue<Command>();
-            //    return;
-            //}
 
-            //SearchTarget();
-            //Explore();
+            return false;
         }
 
-        private void SearchTarget()
+        private void SearchAliens()
         {
-            if (!_canSearchForTargets)
+            if (!_canSearchForAliens)
             {
                 return;
             }
 
             if (!_commands.Any())
             {
-                _commands = _routeFinder.FindRouteToNextTarget();
-                _canSearchForTargets = _commands.Any();
-                _canExplore = !_canSearchForTargets;
+                _commands = _routeFinder.FindRouteToNextAlien();
+                _canSearchForAliens = _commands.Any();
+                _canExplore = !_canSearchForAliens;
             }
 
             if (_commands.Any())
@@ -90,27 +105,27 @@ namespace SpaceWar.Classes
             }
         }
 
-        private bool Fighting()
+        private bool FightAliens()
         {
-            if (TargetInRangeAhead)
+            if (AlienInRangeAhead)
             {
                 _ship.FireLaser();
                 return true;
             }
 
-            if (TargetInRangeToTheLeft)
+            if (AlienInRangeToTheLeft)
             {
                 _ship.TurnLeft();
                 return true;
             }
 
-            if (TargetInRangeToTheRight)
+            if (AlienInRangeToTheRight)
             {
                 _ship.TurnRight();
                 return true;
             }
 
-            if (TargetInRangeToTheBack)
+            if (AlienInRangeToTheBack)
             {
                 _ship.TurnLeft();
                 return true;
@@ -119,31 +134,51 @@ namespace SpaceWar.Classes
             return false;
         }
 
-        private bool TargetInRangeAhead
+        private bool EnemyInRangeAhead
         {
-            get { return _ship.IdentifyTarget; }
+            get { return SquareTypeInRangeIn(_ship.Direction, SquareType.Enemy); }
         }
 
-        private bool TargetInRangeToTheLeft
+        private bool EnemyInRangeToTheLeft
         {
-            get { return TargetInRangeIn(_ship.LeftDir); }
+            get { return SquareTypeInRangeIn(_ship.LeftDir, SquareType.Enemy); }
         }
 
-        private bool TargetInRangeToTheRight
+        private bool EnemyInRangeToTheRight
         {
-            get { return TargetInRangeIn(_ship.RightDir); }
+            get { return SquareTypeInRangeIn(_ship.RightDir, SquareType.Enemy); }
         }
 
-        private bool TargetInRangeToTheBack
+        private bool EnemyInRangeToTheBack
         {
-            get { return TargetInRangeIn(_ship.BackDir); }
+            get { return SquareTypeInRangeIn(_ship.BackDir, SquareType.Enemy); }
         }
 
-        private bool TargetInRangeIn(Direction dir)
+        private bool AlienInRangeAhead
+        {
+            get { return SquareTypeInRangeIn(_ship.Direction, SquareType.Alien); }
+        }
+
+        private bool AlienInRangeToTheLeft
+        {
+            get { return SquareTypeInRangeIn(_ship.LeftDir, SquareType.Alien); }
+        }
+
+        private bool AlienInRangeToTheRight
+        {
+            get { return SquareTypeInRangeIn(_ship.RightDir, SquareType.Alien); }
+        }
+
+        private bool AlienInRangeToTheBack
+        {
+            get { return SquareTypeInRangeIn(_ship.BackDir, SquareType.Alien); }
+        }
+
+        private bool SquareTypeInRangeIn(Direction dir, SquareType squareType)
         {
             var firstNonSpaceSquare = _map.GetLineOfSquares(_ship.Pos, dir)
                 .First(square => square.SquareType != SquareType.Space);
-            return firstNonSpaceSquare.SquareType == SquareType.Target;
+            return firstNonSpaceSquare.SquareType == squareType;
         }
 
         private void Explore()

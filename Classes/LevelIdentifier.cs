@@ -90,16 +90,16 @@ namespace SpaceWar.Classes
         {
             var map = new StringBuilder();
             map.AppendLine("######################");
-            map.AppendLine("#        X#X         #");
-            map.AppendLine("#   #    X#X     #   #");
+            map.AppendLine("#         #          #");
+            map.AppendLine("#   #     #      #   #");
             map.AppendLine("#   ##############   #");
             map.AppendLine("#                    #");
             map.AppendLine("#                    #");
-            map.AppendLine("### X            X ###");
+            map.AppendLine("###                ###");
             map.AppendLine("#                    #");
             map.AppendLine("#   ##############   #");
-            map.AppendLine("#   #    X#X     #   #");
-            map.AppendLine("#        X#X         #");
+            map.AppendLine("#   #     #      #   #");
+            map.AppendLine("#         #          #");
             map.AppendLine("######################");
 
             return map.ToString()
