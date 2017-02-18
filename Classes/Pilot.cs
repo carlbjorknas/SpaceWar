@@ -37,14 +37,36 @@ namespace SpaceWar.Classes
 
         public void Steer()
         {
-            if (Fighting())
+            if (TargetInRangeAhead || TargetInRangeToTheBack)
             {
-                _commands = new Queue<Command>();
-                return;
+                if (_ship.LidarLeft >= _ship.LidarRight)
+                {
+                    _ship.TurnLeft();
+                }
+                else
+                {
+                    _ship.TurnRight();
+                }
             }
+            else if (TargetInRangeToTheLeft || TargetInRangeToTheRight)
+            {
+                if (_ship.LidarFront >= _ship.LidarBack)
+                {
+                    _ship.MoveForward();
+                }
+                else
+                {
+                    _ship.MoveBackward();
+                }
+            }
+            //if (Fighting())
+            //{
+            //    _commands = new Queue<Command>();
+            //    return;
+            //}
 
-            SearchTarget();
-            Explore();
+            //SearchTarget();
+            //Explore();
         }
 
         private void SearchTarget()
